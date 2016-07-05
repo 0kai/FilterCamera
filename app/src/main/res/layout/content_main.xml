@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/activity_main">
+
+    <Button
+        android:text="Camera"
+        android:layout_width="90dp"
+        android:layout_height="50dp"
+        android:id="@+id/btn_camera"
+        android:layout_centerInParent="true"
+        />
+
+    <Button
+        android:text="Bitmap"
+        android:layout_width="90dp"
+        android:layout_height="50dp"
+        android:id="@+id/btn_bitmap"
+        android:layout_below="@id/btn_camera"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
