@@ -95,6 +95,7 @@ public class BaseFilter {
     }
 
     public final void destroy() {
+        if (!isInitialized()) return;
         GLES20.glDeleteProgram(mProgram);
         mIsInitialized = false;
         onDestroy();
