@@ -24,23 +24,33 @@ public class BaseFilter {
                     "textureCoordinate = inputTextureCoordinate;" +
                     "}";
 
-    protected static final String NO_FILTER_FRAGMENT_SHADER =
+    protected static final String CAMERA_FILTER_FRAGMENT_SHADER_HEAD =
             "#extension GL_OES_EGL_image_external : require\n"+
-                    "precision mediump float;" +
+                    "uniform samplerExternalOES inputImageTexture;\n";
+
+    protected static final String BITMAP_FILTER_FRAGMENT_SHADER_HEAD =
+            "uniform sampler2D inputImageTexture;\n";
+
+    protected static final String NO_FILTER_FRAGMENT_SHADER =
+            "precision mediump float;" +
                     "varying vec2 textureCoordinate;\n" +
-                    "uniform samplerExternalOES s_texture;\n" +
                     "void main() {" +
-                    "  gl_FragColor = texture2D( s_texture, textureCoordinate );\n" +
+                    "  gl_FragColor = texture2D( inputImageTexture, textureCoordinate );\n" +
                     "}";
 
     private final LinkedList<Runnable> mRunOnDraw;
-    private final String mVertexShader;
-    private final String mFragmentShader;
+    private String mVertexShader;
+    private String mFragmentShader;
     private int mProgram;
     private boolean mIsInitialized;
 
     protected int mOutputWidth;
     protected int mOutputHeight;
+
+    /**
+     * default to filter camera image
+     */
+    private boolean isForCamera = true;
 
     public BaseFilter() {
         this(NO_FILTER_VERTEX_SHADER, NO_FILTER_FRAGMENT_SHADER);
@@ -52,6 +62,14 @@ public class BaseFilter {
         mFragmentShader = fragmentShader;
     }
 
+    /**
+     * only to filter bitmap, useful before calling init
+     */
+    public BaseFilter setAsStatic() {
+        isForCamera = false;
+        return this;
+    }
+
     public final void init() {
         onInit();
         mIsInitialized = true;
@@ -60,7 +78,9 @@ public class BaseFilter {
 
     public void onInit() {
         int vertexShader    = OpenGlUtils.loadShader(GLES20.GL_VERTEX_SHADER, mVertexShader);
-        int fragmentShader  = OpenGlUtils.loadShader(GLES20.GL_FRAGMENT_SHADER, mFragmentShader);
+        int fragmentShader  = OpenGlUtils.loadShader(GLES20.GL_FRAGMENT_SHADER,
+                (isForCamera ? CAMERA_FILTER_FRAGMENT_SHADER_HEAD : BITMAP_FILTER_FRAGMENT_SHADER_HEAD) +
+                        mFragmentShader);
 
         mProgram = GLES20.glCreateProgram();             // create empty OpenGL ES Program
         GLES20.glAttachShader(mProgram, vertexShader);   // add the vertex shader to program
@@ -71,9 +91,16 @@ public class BaseFilter {
     public void onInitialized() {
     }
 
+    public void onDrawArraysPre() {
+    }
+
     public final void destroy() {
         GLES20.glDeleteProgram(mProgram);
         mIsInitialized = false;
+        onDestroy();
+    }
+
+    public void onDestroy() {
     }
 
     public void onOutputSizeChanged(final int width, final int height) {
@@ -83,6 +110,10 @@ public class BaseFilter {
 
     public int getProgram() {
         return mProgram;
+    }
+
+    public boolean isForCamera() {
+        return isForCamera;
     }
 
     public void runPendingOnDrawTasks() {

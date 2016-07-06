@@ -8,7 +8,10 @@ import android.widget.ImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import z0kai.filterlib.FilterRender;
 import z0kai.filterlib.OpenGlUtils;
+import z0kai.filterlib.filters.BaseFilter;
+import z0kai.filterlib.filters.SepiaFilter;
 
 import static z0kai.filterlib.OpenGlUtils.NO_TEXTURE;
 
@@ -28,6 +31,10 @@ public class BitmapActivity extends AppCompatActivity {
 
     private void showFilterImage() {
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.z_0kai_pet);
-        int texture = OpenGlUtils.loadTexture(bitmap, NO_TEXTURE, true);
+        BaseFilter filter = new SepiaFilter();
+        filter.setAsStatic();
+        FilterRender filterRender = new FilterRender(filter);
+        bitmap = filterRender.getFilterBitmap(bitmap);
+        ivBitmap.setImageBitmap(bitmap);
     }
 }

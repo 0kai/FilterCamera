@@ -67,7 +67,7 @@ public class CameraInstance {
     }
 
     public boolean tryOpenCamera(CameraOpenCallback callback) {
-        return tryOpenCamera(callback, Camera.CameraInfo.CAMERA_FACING_BACK);
+        return tryOpenCamera(callback, Camera.CameraInfo.CAMERA_FACING_FRONT);
     }
 
     public int getFacing() {
@@ -223,6 +223,8 @@ public class CameraInstance {
         }
 
         mParams = mCameraDevice.getParameters();
+        mParams.setRotation(mFacing == Camera.CameraInfo.CAMERA_FACING_BACK ? 90 : 270);
+        mCameraDevice.setDisplayOrientation(90);
         List<Integer> supportedPictureFormats = mParams.getSupportedPictureFormats();
 
         for(int fmt : supportedPictureFormats) {

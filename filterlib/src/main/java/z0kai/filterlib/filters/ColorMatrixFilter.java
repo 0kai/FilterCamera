@@ -8,15 +8,13 @@ import android.opengl.GLES20;
 
 public class ColorMatrixFilter extends BaseFilter {
     public static final String COLOR_MATRIX_FRAGMENT_SHADER =
-            "#extension GL_OES_EGL_image_external : require\n"+
             "precision mediump float;" +
             "varying vec2 textureCoordinate;\n" +
-            "uniform samplerExternalOES s_texture;\n" +
             "uniform lowp mat4 colorMatrix;\n" +
             "uniform lowp float intensity;\n" +
 
             "void main() {" +
-            "    lowp vec4 textureColor = texture2D(s_texture, textureCoordinate);\n" +
+            "    lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);\n" +
             "    lowp vec4 outputColor = textureColor * colorMatrix;\n" +
             "    gl_FragColor = (intensity * outputColor) + ((1.0 - intensity) * textureColor);\n" +
             "}";

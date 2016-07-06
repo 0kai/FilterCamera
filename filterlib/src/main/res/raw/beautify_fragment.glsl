@@ -1,7 +1,7 @@
-#extension GL_OES_EGL_image_external : require
-precision highp float;
+//#extension GL_OES_EGL_image_external : require
+//uniform samplerExternalOES inputImageTexture;
 
-uniform samplerExternalOES inputImageTexture;
+precision highp float;
 
 uniform vec2 singleStepOffset; 
 uniform highp vec4 params; 
